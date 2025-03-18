@@ -1,6 +1,6 @@
-# DekaGPU Deployment Helm Chart with SGLANG
+# Helm Chart for LLM deployment using Sglang on DekaGPU
 
-This is a reusable Helm chart designed to deploy AI models (such as Qwen2.5-72B-Instruct) on Kubernetes clusters with GPU support. It supports customization via `values.yaml` for flexibility across different models and environments.
+This is a reusable Helm chart designed to deploy AI models (such as Qwen2.5-72B-Instruct) on DekaGPU using Sglang. It supports customization via `values.yaml` for flexibility across different models and environments.
 
 ---
 
@@ -16,30 +16,28 @@ This is a reusable Helm chart designed to deploy AI models (such as Qwen2.5-72B-
 ## Prerequisites
 
 - Helm 3.x
-- Kubernetes cluster with GPU-enabled nodes
-- Nvidia GPU Operator (for `nvidia` runtime class and GPU scheduling)
-- (Optional) MetalLB or other LoadBalancer integration if using `LoadBalancer` type Services
+- DekaGPU's Kubernetes cluster with GPU-enabled nodes
 
 ---
 
 ## Folder Structure
-
-my-helm-chart/
+```
+sglang-helm/
 ├── Chart.yaml
 ├── values.yaml
 └── templates/
-├── deployment.yaml
-├── pvc.yaml
-└── service.yaml
-
+    ├── deployment.yaml
+    ├── pvc.yaml
+    └── service.yaml
+```
 ---
 
 ## Installation
 
 ### 1️⃣ Clone the repository
 ```bash
-git clone <repo-url>
-cd my-helm-chart
+git clone https://github.com/Lintasarta/sglang-helm.git
+cd sglang-helm
 ```
 ### 2️⃣ Customize your values.yaml
 
@@ -89,17 +87,17 @@ service:
       targetPort: 30000
       protocol: TCP
 ```
-	💡 Tip: If you want to reuse existing PVC/Service, set pvc.enabled: false and service.enabled: false.
+💡 Tip: If you want to reuse existing PVC/Service, set pvc.enabled: false and service.enabled: false.
 
 
 
 ### 3️⃣ Install the chart
 ```bash
-helm install <release-name> ./my-helm-chart -n <namespace> --create-namespace
+helm install <release-name> . -f values.yaml -n <namespace> --create-namespace
 ```
 Example:
 ```bash
-helm install qwen ./my-helm-chart -n sglang --create-namespace
+helm install qwen . -f values.yaml -n sglang --create-namespace
 ```
 
 
@@ -107,16 +105,13 @@ helm install qwen ./my-helm-chart -n sglang --create-namespace
 
 To upgrade with new configurations:
 ```bash
-helm upgrade <release-name> ./my-helm-chart -n <namespace> -f values.yaml
+helm upgrade <release-name> . -f values.yaml -n <namespace>
 ```
 
 ### Uninstalling the chart
 ```bash
 helm uninstall <release-name> -n <namespace>
 ```
-
-
-
 
 ### Notes
 - The chart automatically mounts PVC and configures GPUs for AI workloads.
