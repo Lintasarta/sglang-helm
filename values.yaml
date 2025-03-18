@@ -22,7 +22,7 @@ affinity:
 tolerations: {}
 
 pvc:
-  enabled: false
+  enabled: true
   name: ""  
   storageClassName: storage-nvme-c1
   size: 250Gi
