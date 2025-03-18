@@ -19,11 +19,7 @@ affinity:
           # - NVIDIA-H100-80GB-HBM3-MIG-1g.40gb
           # - NVIDIA-L40S
 
-tolerations:
-  - key: dekallm
-    operator: Equal
-    value: "true"
-    effect: NoSchedule
+tolerations: {}
 
 pvc:
   enabled: false

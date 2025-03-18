@@ -15,7 +15,10 @@ spec:
         app: {{ .Values.app }}
     spec:
       affinity: {{ toYaml .Values.affinity | nindent 8 }}
-      tolerations: {{ toYaml .Values.tolerations | nindent 8 }}
+      {{- if .Values.tolerations }}
+      tolerations: 
+      {{ toYaml .Values.tolerations | nindent 8 }}
+      {{- end }}
       volumes:
       - name: cache-volume
         persistentVolumeClaim:
