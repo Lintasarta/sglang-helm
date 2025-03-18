@@ -76,14 +76,14 @@ spec:
           mountPath: /.triton
         livenessProbe:
           httpGet:
-            path: /health
-            port: 30000
-          initialDelaySeconds: 400
-          periodSeconds: 10
+            path: {{ .Values.probes.liveness.path }}
+            port: {{ .Values.probes.liveness.port }}
+          initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
         readinessProbe:
           httpGet:
-            path: /health
-            port: 30000
-          initialDelaySeconds: 400
-          periodSeconds: 5
+            path: {{ .Values.probes.readiness.path }}
+            port: {{ .Values.probes.readiness.port }}
+          initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
       runtimeClassName: nvidia

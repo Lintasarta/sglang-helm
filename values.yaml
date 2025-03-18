@@ -55,6 +55,19 @@ resources:
     memory: "16Gi"
     nvidia.com/gpu: "8"
 
+# Probe configurations for server
+probes:
+  liveness:
+    path: /health
+    port: 30000
+    initialDelaySeconds: 400
+    periodSeconds: 10
+  readiness:
+    path: /health
+    port: 30000
+    initialDelaySeconds: 400
+    periodSeconds: 5
+
 # Extra arguments passed to the model launcher.
 # Example:
 # extraArgs:
