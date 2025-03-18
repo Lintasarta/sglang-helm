@@ -12,7 +12,12 @@ affinity:
         - key: nvidia.com/gpu.product
           operator: In
           values:
-          - NVIDIA-L40S
+          # Add one of the following options:
+          # - NVIDIA-H100-80GB-HBM3
+          # - NVIDIA-H100-80GB-HBM3-MIG-1g.10gb
+          # - NVIDIA-H100-80GB-HBM3-MIG-1g.20gb
+          # - NVIDIA-H100-80GB-HBM3-MIG-1g.40gb
+          # - NVIDIA-L40S
 
 tolerations:
   - key: dekallm
