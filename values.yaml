@@ -1,0 +1,74 @@
+app: llama-32-90b-instruct
+
+modelName: meta-llama/Llama-3.2-90B-Vision-Instruct
+
+replicaCount: 1
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: nvidia.com/gpu.product
+          operator: In
+          values:
+          - NVIDIA-L40S
+
+tolerations:
+  - key: dekallm
+    operator: Equal
+    value: "true"
+    effect: NoSchedule
+
+pvc:
+  enabled: false
+  name: ""  
+  storageClassName: storage-nvme-c1
+  size: 250Gi
+
+service:
+  enabled: true
+  name: ""
+  type: LoadBalancer
+  metallbPool: address-pool
+  annotations:
+    metallb.universe.tf/address-pool: address-pool
+  ports:
+    - name: http-sglang
+      port: 80
+      targetPort: 30000
+      protocol: TCP
+  sessionAffinity: None
+
+resources:
+  limits:
+    cpu: "32"
+    memory: "64Gi"
+    nvidia.com/gpu: "8"
+  requests:
+    cpu: "4"
+    memory: "16Gi"
+    nvidia.com/gpu: "8"
+
+# Extra arguments passed to the model launcher.
+# Example:
+# extraArgs:
+#   - "--tp"
+#   - "8"
+#   - "--dp"
+#   - "1"
+#   - "--schedule-conservativeness"
+#   - "0.5"
+#   - "--tool-call-parser"
+#   - "qwen25"
+#
+# For more available args, refer to:
+# https://github.com/sgl-project/sglang/blob/main/docs/backend/server_arguments.md
+extraArgs: {}
+
+# Additional environment variables (optional)
+# Example:
+# env:
+#   - name: HUGGING_FACE_HUB_TOKEN
+#     value: <HUGGING_FACE_HUB_TOKEN>
+env: {}

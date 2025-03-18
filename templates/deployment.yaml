@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app }}
+  labels:
+    app: {{ .Values.app }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app }}
+    spec:
+      affinity: {{ toYaml .Values.affinity | nindent 8 }}
+      tolerations: {{ toYaml .Values.tolerations | nindent 8 }}
+      volumes:
+      - name: cache-volume
+        persistentVolumeClaim:
+          claimName: {{ .Values.pvc.name | default .Values.app }}
+      - name: shm
+        emptyDir:
+          medium: Memory
+          sizeLimit: "2Gi"
+      - name: triton
+        emptyDir: {}
+
+      containers:
+      - name: {{ .Values.app }}
+        image: docker.io/lmsysorg/sglang:latest
+        command: ["python3", "-m", "sglang.launch_server"]
+        args:
+          - "--model-path"
+          - "{{ .Values.modelName }}"
+          - "--host"
+          - "0.0.0.0"
+          - "--port"
+          - "30000"
+          {{- range .Values.extraArgs }}
+          - {{ . | quote }}
+          {{- end }}
+        env:
+          - name: TORCHINDUCTOR_CACHE_DIR
+            value: /tmp/torchinductor_cache
+          - name: HF_HOME
+            value: /.cache
+          {{- if .Values.env }}
+          {{- range .Values.env }}
+          - name: {{ .name }}
+            value: {{ .value | quote }}
+          {{- end }}
+          {{- end }}  
+        ports:
+        - containerPort: 30000
+        resources:
+          limits:
+            cpu: {{ .Values.resources.limits.cpu | quote }}
+            memory: {{ .Values.resources.limits.memory | quote }}
+            nvidia.com/gpu: {{ index .Values.resources.requests "nvidia.com/gpu" | quote }}
+          requests:
+            cpu: {{ .Values.resources.requests.cpu | quote }}
+            memory: {{ .Values.resources.requests.memory | quote }}
+            nvidia.com/gpu: {{ index .Values.resources.requests "nvidia.com/gpu" | quote }}
+        securityContext:
+          runAsUser: 1000
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+        volumeMounts:
+        - mountPath: /.cache
+          name: cache-volume
+        - name: shm
+          mountPath: /dev/shm
+        - name: triton
+          mountPath: /.triton
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 30000
+          initialDelaySeconds: 400
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 30000
+          initialDelaySeconds: 400
+          periodSeconds: 5
+      runtimeClassName: nvidia
