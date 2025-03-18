@@ -121,6 +121,5 @@ helm uninstall <release-name> -n <namespace>
 
 
 ### TODO / Suggestions
-- Add configurable runtimeClassName
 - Support Horizontal Pod Autoscaler (HPA)
 - Add ConfigMap / Secrets injection (optional)
