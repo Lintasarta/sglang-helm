@@ -32,7 +32,7 @@ spec:
 
       containers:
       - name: {{ .Values.app }}
-        image: docker.io/lmsysorg/sglang:latest
+        image: {{ .Values.image }}
         command: ["python3", "-m", "sglang.launch_server"]
         args:
           - "--model-path"
@@ -83,10 +83,12 @@ spec:
             port: {{ .Values.probes.liveness.port }}
           initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
           periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+          failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
         readinessProbe:
           httpGet:
             path: {{ .Values.probes.readiness.path }}
             port: {{ .Values.probes.readiness.port }}
           initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
           periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+          failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
       runtimeClassName: nvidia
