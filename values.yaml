@@ -37,7 +37,7 @@ service:
   ports:
     - name: http-sglang
       port: 80
-      targetPort: 30000
+      targetPort: 8000
       protocol: TCP
   sessionAffinity: None
 
