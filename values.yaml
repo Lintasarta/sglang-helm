@@ -55,14 +55,16 @@ resources:
 probes:
   liveness:
     path: /health
-    port: 30000
-    initialDelaySeconds: 400
-    periodSeconds: 10
+    port: 8000
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    failureThreshold: 40
   readiness:
     path: /health
-    port: 30000
-    initialDelaySeconds: 400
-    periodSeconds: 5
+    port: 8000
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    failureThreshold: 40
 
 # Extra arguments passed to the model launcher.
 # Example:
