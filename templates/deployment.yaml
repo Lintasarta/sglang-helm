@@ -37,8 +37,6 @@ spec:
         args:
           - "--model-path"
           - "{{ .Values.modelName }}"
-          - "--host"
-          - "0.0.0.0"
           - "--port"
           - "8000"
           {{- range .Values.extraArgs }}
@@ -56,7 +54,7 @@ spec:
           {{- end }}
           {{- end }}  
         ports:
-        - containerPort: 30000
+        - containerPort: 8000
         resources:
           limits:
             cpu: {{ .Values.resources.limits.cpu | quote }}
